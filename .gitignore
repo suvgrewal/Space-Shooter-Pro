@@ -1,0 +1,63 @@
+# =============== #
+# Unity Generated #
+# =============== #
+[Ll]ibrary/
+[Tt]emp/
+[Oo]bj/
+[Bb]uild/
+[Bb]uilds/
+[Ll]ogs/
+[Mm]emoryCaptures/
+UserSettings/
+*/sysinfo.txt
+
+# Crash Reports
+*.stacktrace
+
+# Asset meta data should only be ignored when the corresponding asset is also ignored
+!*.meta
+
+# ============ #
+# Visual Studio #
+# ============ #
+.vs/
+.vscode/
+*.sln
+*.csproj
+*.pidb
+*.user
+*.userprefs
+*.unityproj
+*.booproj
+
+# ============== #
+# OS Generated    #
+# ============== #
+.DS_Store
+Thumbs.db
+
+# ================= #
+# Package Management #
+# ================= #
+Packages/com.unity.package-manager.cache/
+
+# =============== #
+# Builds / Exports #
+# =============== #
+*.apk
+*.aab
+*.app
+*.exe
+*.dll
+*.pdb
+*.mp4
+*.zip
+
+# ================= #
+# Rider / JetBrains #
+# ================= #
+.idea/
+*.sln.iml
+
+# Ignore addressables build cache
+Assets/AddressableAssetsData/AssetGroups/
