@@ -7,11 +7,19 @@ public class Player : MonoBehaviour
     // Start is called before the first frame update
     [SerializeField]
     private float _speed = 10f;
+    [SerializeField]
+    private GameObject _laserPrefab;
+    [SerializeField]
+    private float _fireRate = 0.5f;
 
-    private float initialZ = 0;
+    private float _canFire = -1f;
 
-    private float x_bound = 4f;
-    private float y_bound = 4f;
+    private float _initialZ = 0;
+
+    private float _xBound = 4f;
+    private float _yBound = 4f;
+
+    private Vector3 offset = new Vector3(0f, 0.8f, 0f);
 
     void Start()
     {
@@ -23,6 +31,12 @@ public class Player : MonoBehaviour
     void Update()
     {
         CalculateMovement();
+
+        // hit space key, spawn game object
+        if (Input.GetKeyDown(KeyCode.Space) && Time.time > _canFire)
+        {
+            FireLaser();
+        }  
     }
 
     void CalculateMovement()
@@ -30,26 +44,32 @@ public class Player : MonoBehaviour
         float horizontalInput = Input.GetAxis("Horizontal");
         float verticalInput = Input.GetAxis("Vertical");
 
-        Vector3 direction = new Vector3(horizontalInput, verticalInput, initialZ);
+        Vector3 direction = new Vector3(horizontalInput, verticalInput, _initialZ);
 
         transform.Translate(direction * _speed * Time.deltaTime);
 
-        if (transform.position.x > x_bound)
+        if (transform.position.x > _xBound)
         {
-            transform.position = new Vector3(-x_bound, transform.position.y, transform.position.z);
+            transform.position = new Vector3(-_xBound, transform.position.y, transform.position.z);
         }
-        else if (transform.position.x < -x_bound)
+        else if (transform.position.x < -_xBound)
         {
-            transform.position = new Vector3(x_bound, transform.position.y, transform.position.z);
+            transform.position = new Vector3(_xBound, transform.position.y, transform.position.z);
         }
 
-        if (transform.position.y > y_bound)
+        if (transform.position.y > _yBound)
         {
-            transform.position = new Vector3(transform.position.x, -y_bound, transform.position.z);
+            transform.position = new Vector3(transform.position.x, -_yBound, transform.position.z);
         }
-        else if (transform.position.y < -y_bound)
+        else if (transform.position.y < -_yBound)
         {
-            transform.position = new Vector3(transform.position.x, y_bound, transform.position.z);
+            transform.position = new Vector3(transform.position.x, _yBound, transform.position.z);
         }
+    }
+    void FireLaser()
+    {
+        _canFire = Time.time + _fireRate;
+
+        Instantiate(_laserPrefab, transform.position + offset, Quaternion.identity);
     }
 }
