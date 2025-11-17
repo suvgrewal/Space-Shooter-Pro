@@ -23,7 +23,7 @@ public class Player : MonoBehaviour
     private float _initialZ = 0;
     private float _xBound = 8f;
     private float _yBound = 8f;
-    private Vector3 offset = new Vector3(0f, 0.8f, 0f);
+    private Vector3 offset = new Vector3(0f, 1.05f, 0f);
 
     void Start()
     {

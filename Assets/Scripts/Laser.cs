@@ -19,7 +19,7 @@ public class Laser : MonoBehaviour
 
     void CheckBounds()
     {
-        if (transform.position.y > yBound || transform.position.y < 0f)
+        if (transform.position.y > yBound || transform.position.y < -yBound)
         {
             Destroy(this.gameObject, destroyDelay);
         }

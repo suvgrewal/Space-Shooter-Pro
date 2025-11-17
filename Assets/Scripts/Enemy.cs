@@ -33,11 +33,11 @@ public class Enemy : MonoBehaviour
         transform.position = new Vector3(Random.Range(_lowerXBound, _upperXBound), _upperYBound, 0f);
     }
 
-    private void OnTriggerEnter(Collider other)
+    private void OnTriggerEnter2D(Collider2D other)
     {
         Debug.Log("Hit: " + other.transform.name);
 
-        if (other.transform.name == "Player")
+        if (other.transform.tag == "Player")
         {
             Player player = other.transform.GetComponent<Player>();
 
@@ -49,7 +49,7 @@ public class Enemy : MonoBehaviour
             Destroy(this.gameObject);
         }
 
-        if (other.transform.name == "Laser(Clone)")
+        if (other.transform.tag == "Laser")
         {
             Destroy(other.gameObject);
             Destroy(this.gameObject);

@@ -8,6 +8,8 @@ public class SpawnManager : MonoBehaviour
     private GameObject _enemyPrefab;
     [SerializeField]
     private GameObject _enemyContainer;
+    [SerializeField]
+    private GameObject _powerUpPrefab;
 
     [SerializeField]
     private float _xBound = 8f;
@@ -19,7 +21,7 @@ public class SpawnManager : MonoBehaviour
 
     void Start()
     {
-        StartCoroutine(SpawnRoutine());
+        StartCoroutine(SpawnEnemyRoutine());
     }
 
     public void OnPlayerDeath()
@@ -27,7 +29,7 @@ public class SpawnManager : MonoBehaviour
         _keepSpawning = false;
     }
 
-    IEnumerator SpawnRoutine()
+    IEnumerator SpawnEnemyRoutine()
     {
         while (_keepSpawning)
         {
@@ -37,5 +39,16 @@ public class SpawnManager : MonoBehaviour
 
             yield return new WaitForSeconds(5.0f);
         }
+    }
+
+    IEnumerator SpawnPowerUpRoutine()
+    {
+        while (_keepSpawning)
+        {
+            Vector3 posToSpawn = new Vector3(Random.Range(-_xBound, _xBound), _ySpawnLoc, 0);
+            // instantiate powerup object
+        }
+
+        yield return new WaitForSeconds(Random.Range(3.0f, 7.0f));
     }
 }
