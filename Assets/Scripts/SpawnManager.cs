@@ -6,17 +6,34 @@ public class SpawnManager : MonoBehaviour
 {
     [SerializeField]
     private GameObject _enemyPrefab;
+    [SerializeField]
+    private GameObject _enemyContainer;
 
-    void Update()
+    [SerializeField]
+    private float _xBound = 8f;
+    [SerializeField]
+    private float _ySpawnLoc = 7f;
+
+    [SerializeField]
+    private bool _keepSpawning = true;
+
+    void Start()
     {
         StartCoroutine(SpawnRoutine());
     }
 
+    public void OnPlayerDeath()
+    {
+        _keepSpawning = false;
+    }
+
     IEnumerator SpawnRoutine()
     {
-        while (true)
+        while (_keepSpawning)
         {
-            Enemy enemy = Instantiate(new Enemy(), transform.position, Quaternion.identity)
+            Vector3 posToSpawn = new Vector3(Random.Range(-_xBound, _xBound), _ySpawnLoc, 0);
+            GameObject newEnemy = Instantiate(_enemyPrefab, posToSpawn, Quaternion.identity);
+            newEnemy.transform.parent = _enemyContainer.transform;
 
             yield return new WaitForSeconds(5.0f);
         }
