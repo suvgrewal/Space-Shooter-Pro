@@ -14,25 +14,24 @@ public class Player : MonoBehaviour
 
     private float _canFire = -1f;
 
+    [SerializeField]
+    private int _lives = 3;
+    private SpawnManager _spawnManager;
+
     private float _initialZ = 0;
-
-    private float _xBound = 4f;
-    private float _yBound = 4f;
-
+    private float _xBound = 8f;
+    private float _yBound = 8f;
     private Vector3 offset = new Vector3(0f, 0.8f, 0f);
 
     void Start()
     {
-        // take current object position = new position (0, 0, 0)
         transform.position = new Vector3(0f, 0f, 0f);
     }
 
-    // Update is called once per frame
     void Update()
     {
         CalculateMovement();
 
-        // hit space key, spawn game object
         if (Input.GetKeyDown(KeyCode.Space) && Time.time > _canFire)
         {
             FireLaser();
@@ -71,5 +70,15 @@ public class Player : MonoBehaviour
         _canFire = Time.time + _fireRate;
 
         Instantiate(_laserPrefab, transform.position + offset, Quaternion.identity);
+    }
+
+    public void Damage()
+    {
+        _lives--;
+
+        if (_lives < 1)
+        {
+            Destroy(this.gameObject);
+        }
     }
 }

@@ -11,7 +11,6 @@ public class Laser : MonoBehaviour
     private float yBound = 8f;
     private float destroyDelay = 0.1f;
 
-    // Update is called once per frame
     void Update()
     {
         transform.Translate(Vector3.up * _speed * Time.deltaTime);
