@@ -56,7 +56,12 @@ public class Player : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Space) && Time.time > _canFire)
         {
             FireLaser();
-        }  
+        }
+
+        if (_isTripleShotActive && (Time.time > _tripleShotExpireTime))
+        {
+            _isTripleShotActive = false;
+        }
     }
 
     public float xBound
@@ -118,20 +123,16 @@ public class Player : MonoBehaviour
 
     public void TripleShotPowerUp()
     {
-        _isTripleShotActive = true;
+        if (!_isTripleShotActive)
+        {
+            _isTripleShotActive = true;
 
-        StartCoroutine(TripleShotPowerDownRoutine());
+            _tripleShotExpireTime = Time.time + _powerUpTime;
+        }
+        else
+        {
+            _tripleShotExpireTime += _powerUpTime;
+        }
     }
 
-    IEnumerator TripleShotPowerDownRoutine()
-    {
-        yield return new WaitForSeconds(_powerUpTime);
-
-        _isTripleShotActive = false;
-
-        //if (Time.time > _tripleShotExpireTime)
-        //{
-        //    _isTripleShotActive = false;
-        //}
-    }
 }
