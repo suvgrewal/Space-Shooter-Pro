@@ -9,7 +9,7 @@ public class SpawnManager : MonoBehaviour
     [SerializeField]
     private GameObject _enemyContainer;
     [SerializeField]
-    private GameObject _powerUpPrefab;
+    private GameObject _tripleShotPowerUpPrefab;
 
     [SerializeField]
     private float _xBound = 8f;
@@ -19,9 +19,17 @@ public class SpawnManager : MonoBehaviour
     [SerializeField]
     private bool _keepSpawning = true;
 
+    [SerializeField]
+    private float _tripleShotSpawnMinTime = 3f;
+    [SerializeField]
+    private float _tripleShotSpawnMaxTime = 7f;
+
+
     void Start()
     {
         StartCoroutine(SpawnEnemyRoutine());
+
+        StartCoroutine(SpawnPowerUpRoutine());
     }
 
     public void OnPlayerDeath()
@@ -46,9 +54,11 @@ public class SpawnManager : MonoBehaviour
         while (_keepSpawning)
         {
             Vector3 posToSpawn = new Vector3(Random.Range(-_xBound, _xBound), _ySpawnLoc, 0);
-            // instantiate powerup object
-        }
+            
+            Instantiate(_tripleShotPowerUpPrefab, posToSpawn, Quaternion.identity);
 
-        yield return new WaitForSeconds(Random.Range(3.0f, 7.0f));
+            yield return new WaitForSeconds(Random.Range(_tripleShotSpawnMinTime, _tripleShotSpawnMaxTime));
+
+        }
     }
 }
