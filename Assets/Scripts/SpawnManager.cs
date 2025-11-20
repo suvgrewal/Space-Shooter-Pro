@@ -8,8 +8,13 @@ public class SpawnManager : MonoBehaviour
     private GameObject _enemyPrefab;
     [SerializeField]
     private GameObject _enemyContainer;
+    //[SerializeField]
+    //private GameObject _tripleShotPowerUpPrefab;
+    //[SerializeField]
+    //private GameObject _speedPowerUpPrefab;
+
     [SerializeField]
-    private GameObject _tripleShotPowerUpPrefab;
+    private GameObject[] _powerUps;
 
     [SerializeField]
     private float _xBound = 8f;
@@ -23,6 +28,11 @@ public class SpawnManager : MonoBehaviour
     private float _tripleShotSpawnMinTime = 3f;
     [SerializeField]
     private float _tripleShotSpawnMaxTime = 7f;
+
+    [SerializeField]
+    private float _speedSpawnTimeMin = 5f;
+    [SerializeField]
+    private float _speedSpawnTimeMax = 10f;
 
 
     void Start()
@@ -54,8 +64,8 @@ public class SpawnManager : MonoBehaviour
         while (_keepSpawning)
         {
             Vector3 posToSpawn = new Vector3(Random.Range(-_xBound, _xBound), _ySpawnLoc, 0);
-            
-            Instantiate(_tripleShotPowerUpPrefab, posToSpawn, Quaternion.identity);
+
+            Instantiate(_powerUps[Random.Range(0, _powerUps.Length)], posToSpawn, Quaternion.identity);
 
             yield return new WaitForSeconds(Random.Range(_tripleShotSpawnMinTime, _tripleShotSpawnMaxTime));
 

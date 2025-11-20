@@ -25,9 +25,15 @@ public class Player : MonoBehaviour
 
     [SerializeField]
     private bool _isTripleShotActive = false;
+    [SerializeField]
+    private bool _isSpeedActive = false;
+    [SerializeField]
+    private bool _shieldsActive = false;
 
     [SerializeField]
     private float _tripleShotExpireTime = 0f;
+    [SerializeField]
+    private float _speedExpireTime = 0f;
 
     private float _initialZ = 0f;
     private float _xBound = 8f;
@@ -36,6 +42,11 @@ public class Player : MonoBehaviour
 
     [SerializeField]
     private float _powerUpTime = 5.0f;
+    [SerializeField]
+    private float _speedPowerUpMultiplier = 2f;
+
+    [SerializeField]
+    private GameObject _playerShield;
 
     void Start()
     {
@@ -46,6 +57,11 @@ public class Player : MonoBehaviour
         if (!_spawnManager)
         {
             Debug.LogError("SpawnManager is NULL");
+        }
+
+        if (_playerShield)
+        {
+            _playerShield.SetActive(false);
         }
     }
 
@@ -61,6 +77,12 @@ public class Player : MonoBehaviour
         if (_isTripleShotActive && (Time.time > _tripleShotExpireTime))
         {
             _isTripleShotActive = false;
+        }
+
+        if (_isSpeedActive && (Time.time > _speedExpireTime))
+        {
+            _isSpeedActive = false;
+            _speed /= _speedPowerUpMultiplier;
         }
     }
 
@@ -112,6 +134,18 @@ public class Player : MonoBehaviour
 
     public void Damage()
     {
+        if (_shieldsActive)
+        {
+            _shieldsActive = false;
+
+            if (_playerShield)
+            {
+                _playerShield.SetActive(false);
+            }
+
+            return;
+        }
+        
         _lives--;
 
         if (_lives < 1)
@@ -133,6 +167,34 @@ public class Player : MonoBehaviour
         {
             _tripleShotExpireTime += _powerUpTime;
         }
+    }
+
+    public void SpeedPowerUp()
+    {
+        if (!_isSpeedActive)
+        {
+            _isSpeedActive = true;
+
+            _speed *= _speedPowerUpMultiplier;
+
+            _speedExpireTime = Time.time + _powerUpTime;
+        }
+        else
+        {
+            _speedExpireTime += _powerUpTime;
+        }
+    }
+
+    public void ShieldPowerUp()
+    {
+        _shieldsActive = true;
+
+        if (_playerShield)
+        {
+            _playerShield.SetActive(true);
+        }
+
+        return;
     }
 
 }
