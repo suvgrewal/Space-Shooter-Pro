@@ -8,10 +8,6 @@ public class SpawnManager : MonoBehaviour
     private GameObject _enemyPrefab;
     [SerializeField]
     private GameObject _enemyContainer;
-    //[SerializeField]
-    //private GameObject _tripleShotPowerUpPrefab;
-    //[SerializeField]
-    //private GameObject _speedPowerUpPrefab;
 
     [SerializeField]
     private GameObject[] _powerUps;

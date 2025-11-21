@@ -38,20 +38,6 @@ public class PowerUp : MonoBehaviour
 
             if (player)
             {
-                if (powerUpType == PowerUpType.TripleShot)
-                {
-                    player.TripleShotPowerUp();
-                }
-                else if (powerUpType == PowerUpType.Speed)
-                {
-                    player.SpeedPowerUp();
-                }
-
-                else if (powerUpType == PowerUpType.Shield)
-                {
-                    player.ShieldPowerUp();
-                }
-
                 switch (powerUpType)
                 {
                     case PowerUpType.TripleShot:
