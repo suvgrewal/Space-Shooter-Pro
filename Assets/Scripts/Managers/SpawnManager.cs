@@ -30,17 +30,35 @@ public class SpawnManager : MonoBehaviour
     [SerializeField]
     private float _speedSpawnTimeMax = 10f;
 
+    [SerializeField]
+    private float _smoothSpawnStartDelay = 3f;
 
     void Start()
     {
-        StartCoroutine(SpawnEnemyRoutine());
+        if (!_enemyContainer)
+        {
+            _enemyContainer = new GameObject("EnemyContainer");
+            _enemyContainer.transform.parent = transform;
+        }
+    }
 
-        StartCoroutine(SpawnPowerUpRoutine());
+    public void StartSpawning()
+    {
+        StartCoroutine(SpawnRoutine());
     }
 
     public void OnPlayerDeath()
     {
         _keepSpawning = false;
+    }
+
+    IEnumerator SpawnRoutine()
+    {
+        yield return new WaitForSeconds(_smoothSpawnStartDelay);
+
+        StartCoroutine(SpawnEnemyRoutine());
+
+        StartCoroutine(SpawnPowerUpRoutine());
     }
 
     IEnumerator SpawnEnemyRoutine()
@@ -60,7 +78,6 @@ public class SpawnManager : MonoBehaviour
         while (_keepSpawning)
         {
             Vector3 posToSpawn = new Vector3(Random.Range(-_xBound, _xBound), _ySpawnLoc, 0);
-
             Instantiate(_powerUps[Random.Range(0, _powerUps.Length)], posToSpawn, Quaternion.identity);
 
             yield return new WaitForSeconds(Random.Range(_tripleShotSpawnMinTime, _tripleShotSpawnMaxTime));

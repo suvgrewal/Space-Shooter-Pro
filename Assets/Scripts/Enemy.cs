@@ -18,13 +18,47 @@ public class Enemy : MonoBehaviour
     [SerializeField]
     private int _enemyValue = 10;
 
+    private Collider2D _col;
+    [SerializeField]
+    private Animator _anim;
+
+    [SerializeField]
+    private float _deathAnimTime = 2.8f;
+
+    [SerializeField]
+    private bool _inDestructionSequence = false;
+
     void Start()
     {
         _player = GameObject.Find("Player").GetComponent<Player>();
+
+        _anim = GetComponent<Animator>();
+
+        _col = GetComponent<Collider2D>();
+
+        if (!_player)
+        {
+            Debug.LogError("Enemy: Player is NULL");
+        }
+
+        if (!_anim)
+        {
+            Debug.LogError("Enemy: Animator is NULL");
+        }
+
+        if (!_col)
+        {
+            Debug.LogError("Enemy: Collider2D is NULL");
+        }
     }
 
     void Update()
     {
+        if (_inDestructionSequence)
+        {
+            return;
+        }
+
         MoveDown();
 
         if (transform.position.y < _lowerYBound)
@@ -56,7 +90,7 @@ public class Enemy : MonoBehaviour
                 player.Damage();
             }
 
-            Destroy(this.gameObject);
+            DestructionSequence();
         }
 
         if (other.CompareTag("Laser"))
@@ -68,7 +102,24 @@ public class Enemy : MonoBehaviour
                 _player.AddScore(_enemyValue);
             }
 
-            Destroy(this.gameObject);
+            DestructionSequence();
         }
+    }
+
+    private void DestructionSequence()
+    {   
+        _inDestructionSequence = true;
+
+        if (_col)
+        {
+            _col.enabled = false;
+        }
+
+        if (_anim)
+        {
+            _anim.SetTrigger("OnEnemyDeath");
+        }
+
+        Destroy(this.gameObject, _deathAnimTime);
     }
 }

@@ -56,14 +56,60 @@ public class Player : MonoBehaviour
     [SerializeField]
     private UIManager _uiManager;
 
+    [SerializeField]
+    GameObject _rightEngineFireObject;
+    [SerializeField]
+    GameObject _leftEngineFireObject;
+    [SerializeField]
+    GameObject _shipFireObject;
+
+    [SerializeField]
+    Animator _rightEngineFireAnim;
+    [SerializeField]
+    Animator _leftEngineFireAnim;
+    [SerializeField]
+    Animator _shipFireAnim;
+
+    [SerializeField]
+    private float _deathAnimTime = 3f;
+
+    [SerializeField]
+    private bool _inDestructionSequence = false;
+
     void Start()
     {
         transform.position = new Vector3(0f, 0f, 0f);
 
+        InstantiateObjects();
+
+        CheckObjects();
+
+        DisableFireObjects();
+
+        PlayerShieldDisplay();
+    }
+
+    void InstantiateObjects()
+    {
         _spawnManager = GameObject.Find("SpawnManager").GetComponent<SpawnManager>();
 
         _uiManager = GameObject.Find("Canvas").GetComponent<UIManager>();
 
+        _rightEngineFireObject = GameObject.Find("Right_Engine_Fire");
+
+        _leftEngineFireObject = GameObject.Find("Left_Engine_Fire");
+
+        _shipFireObject = GameObject.Find("Ship_Fire");
+
+        _rightEngineFireAnim = GameObject.Find("Right_Engine_Fire").GetComponent<Animator>();
+
+        _leftEngineFireAnim = GameObject.Find("Left_Engine_Fire").GetComponent<Animator>();
+
+        _shipFireAnim = GameObject.Find("Ship_Fire").GetComponent<Animator>();
+    }
+
+    void CheckObjects()
+    {
         if (!_spawnManager)
         {
             Debug.LogError("SpawnManager is NULL");
@@ -74,11 +120,61 @@ public class Player : MonoBehaviour
             Debug.LogError("UIManager is NULL");
         }
 
-        PlayerShieldDisplay();
+        if (!_rightEngineFireObject)
+        {
+            Debug.LogError("Right Engine Fire Object is NULL");
+        }
+
+        if (!_leftEngineFireObject)
+        {
+            Debug.LogError("Left Engine Fire Object is NULL");
+        }
+
+        if (!_shipFireObject)
+        {
+            Debug.LogError("Ship Fire Object is NULL");
+        }
+
+        if (!_rightEngineFireAnim)
+        {
+            Debug.LogError("Right Engine Fire Animator is NULL");
+        }
+
+        if (!_leftEngineFireAnim)
+        {
+            Debug.LogError("Left Engine Fire Animator is NULL");
+        }
+
+        if (!_shipFireAnim)
+        {
+            Debug.LogError("Ship Fire Animator is NULL");
+        }
+    }
+
+    void DisableFireObjects()
+    {
+        if (_rightEngineFireObject)
+        {
+            _rightEngineFireObject.SetActive(false);
+        }
+        if (_leftEngineFireObject)
+        {
+            _leftEngineFireObject.SetActive(false);
+        }
+        if (_shipFireObject)
+        {
+            _shipFireObject.SetActive(false);
+        }
     }
 
     void Update()
     {
+
+        if (_inDestructionSequence)
+        {
+            return;
+        }
+        
         CalculateMovement();
 
         if (Input.GetKeyDown(KeyCode.Space) && Time.time > _canFire)
@@ -144,7 +240,6 @@ public class Player : MonoBehaviour
             Instantiate(_laserPrefab, transform.position + offset, Quaternion.identity);
         }
     }
-
     public void Damage()
     {
         if (_shieldsActive)
@@ -155,8 +250,10 @@ public class Player : MonoBehaviour
 
             return;
         }
-        
+
         _lives--;
+
+        PlayFireAnimation();
 
         _uiManager.UpdateLivesDisplay();
 
@@ -164,10 +261,11 @@ public class Player : MonoBehaviour
         {
             _spawnManager.OnPlayerDeath();
 
-            Destroy(this.gameObject);
+            _inDestructionSequence = true;
+
+            Destroy(this.gameObject, _deathAnimTime);
         }
     }
-
     public void TripleShotPowerUp()
     {
         if (!_isTripleShotActive)
@@ -197,7 +295,6 @@ public class Player : MonoBehaviour
             _speedExpireTime += _powerUpTime;
         }
     }
-
     public void ShieldPowerUp()
     {
         if (_shieldsActive)
@@ -229,6 +326,23 @@ public class Player : MonoBehaviour
         _score += points;
 
         _uiManager.UpdateScore();
+    }
+    void PlayFireAnimation()
+    {
+        if (_lives == 2)
+        {
+            _rightEngineFireObject.SetActive(true);
+        }
+
+        else if (_lives == 1)
+        {
+            _leftEngineFireObject.SetActive(true);
+        }
+
+        else if (_lives < 1)
+        {
+            _shipFireObject.SetActive(true);
+        }
     }
 
     public int Score
