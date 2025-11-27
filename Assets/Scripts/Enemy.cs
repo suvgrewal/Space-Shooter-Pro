@@ -28,7 +28,15 @@ public class Enemy : MonoBehaviour
     [SerializeField]
     private bool _inDestructionSequence = false;
 
+    [SerializeField]
+    private AudioSource _audioSource;
+
     void Start()
+    {
+        InstantiateObjects();
+    }
+
+    void InstantiateObjects()
     {
         _player = GameObject.Find("Player").GetComponent<Player>();
 
@@ -36,19 +44,26 @@ public class Enemy : MonoBehaviour
 
         _col = GetComponent<Collider2D>();
 
-        if (!_player)
+        _audioSource = GetComponent<AudioSource>();
+
+        if (_player == null)
         {
             Debug.LogError("Enemy: Player is NULL");
         }
 
-        if (!_anim)
+        if (_anim == null)
         {
             Debug.LogError("Enemy: Animator is NULL");
         }
 
-        if (!_col)
+        if (_col == null)
         {
             Debug.LogError("Enemy: Collider2D is NULL");
+        }
+
+        if (_audioSource == null)
+        {
+            Debug.LogError("Enemy: AudioSource is NULL");
         }
     }
 
@@ -85,7 +100,7 @@ public class Enemy : MonoBehaviour
         {
             Player player = other.transform.GetComponent<Player>();
 
-            if (player)
+            if (player != null)
             {
                 player.Damage();
             }
@@ -97,7 +112,7 @@ public class Enemy : MonoBehaviour
         {
             Destroy(other.gameObject);
 
-            if (_player)
+            if (_player != null)
             {
                 _player.AddScore(_enemyValue);
             }
@@ -110,14 +125,21 @@ public class Enemy : MonoBehaviour
     {   
         _inDestructionSequence = true;
 
-        if (_col)
+        _speed = 0;
+
+        if (_col != null)
         {
             _col.enabled = false;
         }
 
-        if (_anim)
+        if (_anim != null)
         {
             _anim.SetTrigger("OnEnemyDeath");
+        }
+
+        if (_audioSource != null)
+        {
+            _audioSource.Play();
         }
 
         Destroy(this.gameObject, _deathAnimTime);

@@ -98,7 +98,8 @@ public class UIManager : MonoBehaviour
     {
         if (_livesDisplayImg)
         {
-            {   
+            {
+                Debug.Log("Player Lives value: " + _player.Lives);
                 _livesDisplayImg.sprite = _liveSprites[_player.Lives];
             }
         }

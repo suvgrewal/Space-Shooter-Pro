@@ -76,6 +76,15 @@ public class Player : MonoBehaviour
     [SerializeField]
     private bool _inDestructionSequence = false;
 
+    [SerializeField]
+    private AudioClip _laserSoundClip;
+
+    [SerializeField]
+    private AudioSource _audioSource;
+
+    [SerializeField]
+    private AudioClip _explosionSoundClip;
+
     void Start()
     {
         transform.position = new Vector3(0f, 0f, 0f);
@@ -106,62 +115,78 @@ public class Player : MonoBehaviour
         _leftEngineFireAnim = GameObject.Find("Left_Engine_Fire").GetComponent<Animator>();
 
         _shipFireAnim = GameObject.Find("Ship_Fire").GetComponent<Animator>();
+
+        _audioSource = GetComponent<AudioSource>();
+        if (_audioSource != null)
+        {
+            _audioSource.clip = _laserSoundClip; 
+        }
     }
 
     void CheckObjects()
     {
-        if (!_spawnManager)
+        if (_spawnManager == null)
         {
             Debug.LogError("SpawnManager is NULL");
         }
 
-        if (!_uiManager)
+        if (_uiManager == null)
         {
             Debug.LogError("UIManager is NULL");
         }
 
-        if (!_rightEngineFireObject)
+        if (_rightEngineFireObject == null)
         {
             Debug.LogError("Right Engine Fire Object is NULL");
         }
 
-        if (!_leftEngineFireObject)
+        if (_leftEngineFireObject == null)
         {
             Debug.LogError("Left Engine Fire Object is NULL");
         }
 
-        if (!_shipFireObject)
+        if (_shipFireObject == null)
         {
             Debug.LogError("Ship Fire Object is NULL");
         }
 
-        if (!_rightEngineFireAnim)
+        if (_rightEngineFireAnim == null)
         {
             Debug.LogError("Right Engine Fire Animator is NULL");
         }
 
-        if (!_leftEngineFireAnim)
+        if (_leftEngineFireAnim == null)
         {
             Debug.LogError("Left Engine Fire Animator is NULL");
         }
 
-        if (!_shipFireAnim)
+        if (_shipFireAnim == null)
         {
             Debug.LogError("Ship Fire Animator is NULL");
+        }
+
+        if (_audioSource == null)
+        {
+            Debug.LogError("Audio Source is NULL");
+        }
+
+        if (_audioSource.clip == null)
+        {
+            Debug.LogError("Audio Source Clip is NULL");
         }
     }
 
     void DisableFireObjects()
     {
-        if (_rightEngineFireObject)
+        if (_rightEngineFireObject != null)
         {
             _rightEngineFireObject.SetActive(false);
         }
-        if (_leftEngineFireObject)
+        if (_leftEngineFireObject != null)
         {
             _leftEngineFireObject.SetActive(false);
         }
-        if (_shipFireObject)
+        if (_shipFireObject != null)
         {
             _shipFireObject.SetActive(false);
         }
@@ -239,9 +264,19 @@ public class Player : MonoBehaviour
         {
             Instantiate(_laserPrefab, transform.position + offset, Quaternion.identity);
         }
+
+        if (_audioSource.clip != null)
+        {
+            _audioSource.Play();
+        }
     }
     public void Damage()
     {
+        if (_inDestructionSequence || _lives < 1)
+        {
+            return;
+        }
+
         if (_shieldsActive)
         {
             _shieldsActive = false;
@@ -259,12 +294,24 @@ public class Player : MonoBehaviour
 
         if (_lives < 1)
         {
-            _spawnManager.OnPlayerDeath();
-
-            _inDestructionSequence = true;
-
-            Destroy(this.gameObject, _deathAnimTime);
+            BeginDestructionSequence();
         }
+    }
+
+    private void BeginDestructionSequence()
+    {
+        _spawnManager.OnPlayerDeath();
+
+        _inDestructionSequence = true;
+
+        if (_audioSource != null && _explosionSoundClip != null)
+        {
+            _audioSource.clip = _explosionSoundClip;
+
+            _audioSource.Play();
+        }
+
+        Destroy(this.gameObject, _deathAnimTime);
     }
     public void TripleShotPowerUp()
     {

@@ -17,8 +17,12 @@ public class PowerUp : MonoBehaviour
     [SerializeField]
     private PowerUpType powerUpType;
 
+    [SerializeField]
     private float destroyDelay = 0.1f;
     private float yBound = 8f;
+
+    [SerializeField]
+    private AudioClip _pickUpSoundClip;
 
     void Update()
     {
@@ -52,6 +56,13 @@ public class PowerUp : MonoBehaviour
                     default:
                         break;
                 }
+
+                
+            }
+
+            if (_pickUpSoundClip != null)
+            {
+                AudioSource.PlayClipAtPoint(_pickUpSoundClip, Camera.main.transform.position);
             }
 
             Destroy(this.gameObject);
